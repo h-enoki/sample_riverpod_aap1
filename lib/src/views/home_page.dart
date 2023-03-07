@@ -25,8 +25,12 @@ class MyHomePage extends StatelessWidget {
             ),
           ],
         ),
-        body: ListView.builder(
+        body: ListView.separated(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           itemCount: task.length,
+          separatorBuilder: (BuildContext context, int index) {
+            return const Divider(color: Colors.grey);
+          },
           itemBuilder: (context, index) {
             return TodoListItem(index: index, task: task[index]);
           },
