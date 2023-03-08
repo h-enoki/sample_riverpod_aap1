@@ -1,49 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_riverpod_aap1/src/models/task.dart';
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({super.key});
+final isEditingProvider = StateProvider<bool>((ref) {
+  return false;
+});
 
-  final List<Task> task = [
-    Task("task1", false),
-    Task("task2", false),
-    Task("task3", false),
-    Task("task4", false),
-    Task("task5", true),
-    Task("task6", true),
-  ];
+final taskNotifierProvider =
+    StateNotifierProvider<TaskNotifier, List<Task>>((ref) {
+  return TaskNotifier();
+});
+
+class TaskNotifier extends StateNotifier<List<Task>> {
+  TaskNotifier()
+      : super(
+          [
+            Task("task1", false),
+            Task("task2", false),
+            Task("task3", false),
+            Task("task4", false),
+            Task("task5", true),
+            Task("task6", true),
+          ],
+        );
+  void addTask() {
+    debugPrint("addTask");
+    state = [...state, Task("task7", true)];
+  }
+}
+
+class MyHomePage extends ConsumerWidget {
+  const MyHomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isEditingStateController = ref.read(isEditingProvider.notifier);
+    final isEditing = ref.watch(isEditingProvider);
+
+    final task = ref.watch(taskNotifierProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("ToDoリスト"),
         actions: [
           IconButton(
-            icon: const Icon(Icons.create_rounded),
-            onPressed: () => {},
+            icon: Icon(isEditing ? Icons.check : Icons.create_rounded),
+            onPressed: () => {
+              isEditingStateController.state = !isEditing,
+            },
           ),
         ],
       ),
-      // body: ListView.separated(
-      //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      //   itemCount: task.length,
-      //   separatorBuilder: (BuildContext context, int index) {
-      //     return const Divider(color: Colors.grey);
-      //   },
-      //   itemBuilder: (context, index) {
-      //     return TodoListItem(index: index, task: task[index]);
-      //   },
-      // ),
       body: ReorderableListView.builder(
         itemCount: task.length,
         header: const AddTaskListTile(),
         footer: const AddTaskListTile(),
         itemBuilder: (context, index) {
           return Dismissible(
+            key: Key(task[index].title),
             // スワイプ禁止
             direction: DismissDirection.none,
-            key: Key(task[index].title),
             child: TodoListItem(
               index: index,
               task: task[index],
@@ -66,14 +82,15 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class TodoListItem extends StatelessWidget {
+class TodoListItem extends ConsumerWidget {
   const TodoListItem({super.key, required this.index, required this.task});
 
   final int index;
   final Task task;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isEditing = ref.watch(isEditingProvider);
     return InkWell(
       onTap: () {
         debugPrint("onTap：$index");
@@ -88,25 +105,26 @@ class TodoListItem extends StatelessWidget {
           ),
         ),
         child: ListTile(
-          key: Key(task.title),
           title: Text(task.title),
-          trailing: task.isCompleted
-              ? Icon(Icons.check, color: Theme.of(context).primaryColor)
-              : null,
+          trailing: isEditing
+              ? const Icon(Icons.close, color: Colors.red)
+              : task.isCompleted
+                  ? Icon(Icons.check, color: Theme.of(context).primaryColor)
+                  : null,
         ),
       ),
     );
   }
 }
 
-class AddTaskListTile extends StatelessWidget {
+class AddTaskListTile extends ConsumerWidget {
   const AddTaskListTile({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        debugPrint("AddTask");
+        ref.read(taskNotifierProvider.notifier).addTask();
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),

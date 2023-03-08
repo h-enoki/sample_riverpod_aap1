@@ -7,7 +7,7 @@ class AppRouter {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.home:
-        return _buildRoute(MyHomePage());
+        return _buildRoute(const MyHomePage());
 
       default:
         return null;
