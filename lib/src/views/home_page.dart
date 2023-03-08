@@ -23,9 +23,23 @@ class TaskNotifier extends StateNotifier<List<Task>> {
             Task("task6", true),
           ],
         );
-  void addTask() {
+
+  void addTask(Task task) {
     debugPrint("addTask");
-    state = [...state, Task("task7", true)];
+    state = [...state, task];
+  }
+
+  void removeTask(int index) {
+    debugPrint("removeTask");
+    state = List.from(state)..removeAt(index);
+  }
+
+  void updateIsCompleted(int index) {
+    state = [
+      ...state.sublist(0, index),
+      Task(state[index].title, !state[index].isCompleted),
+      ...state.sublist(index + 1),
+    ];
   }
 }
 
@@ -53,11 +67,11 @@ class MyHomePage extends ConsumerWidget {
       ),
       body: ReorderableListView.builder(
         itemCount: task.length,
-        header: const AddTaskListTile(),
-        footer: const AddTaskListTile(),
+        header: isEditing ? const AddTaskListTile() : null,
+        footer: isEditing ? const AddTaskListTile() : null,
         itemBuilder: (context, index) {
           return Dismissible(
-            key: Key(task[index].title),
+            key: Key(index.toString()),
             // スワイプ禁止
             direction: DismissDirection.none,
             child: TodoListItem(
@@ -94,6 +108,11 @@ class TodoListItem extends ConsumerWidget {
     return InkWell(
       onTap: () {
         debugPrint("onTap：$index");
+        // ref.read(taskNotifierProvider.notifier).updateTask(
+        //       index,
+        //       Task("task10", true),
+        //     );
+        ref.read(taskNotifierProvider.notifier).updateIsCompleted(index);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -107,7 +126,12 @@ class TodoListItem extends ConsumerWidget {
         child: ListTile(
           title: Text(task.title),
           trailing: isEditing
-              ? const Icon(Icons.close, color: Colors.red)
+              ? IconButton(
+                  icon: const Icon(Icons.close, color: Colors.red),
+                  onPressed: () {
+                    ref.read(taskNotifierProvider.notifier).removeTask(index);
+                  },
+                )
               : task.isCompleted
                   ? Icon(Icons.check, color: Theme.of(context).primaryColor)
                   : null,
@@ -124,7 +148,7 @@ class AddTaskListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        ref.read(taskNotifierProvider.notifier).addTask();
+        ref.read(taskNotifierProvider.notifier).addTask(Task("task6", false));
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
