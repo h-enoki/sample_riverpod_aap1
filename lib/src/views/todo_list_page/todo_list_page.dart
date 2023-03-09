@@ -74,9 +74,8 @@ class ToDoListPage extends ConsumerWidget {
         actions: [
           IconButton(
             icon: Icon(isEditing ? Icons.check : Icons.create_rounded),
-            onPressed: () => {
-              ref.read(isEditingProvider.notifier).state = !isEditing,
-            },
+            onPressed: () =>
+                ref.read(isEditingProvider.notifier).state = !isEditing,
           ),
         ],
       ),

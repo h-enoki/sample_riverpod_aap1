@@ -14,16 +14,14 @@ class TodoListItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isEditing = ref.watch(isEditingProvider);
     return InkWell(
-      onTap: () {
-        isEditing
-            ? showEditTaskDialog(
-                context,
-                AddEditMode.edit,
-                index: index,
-                title: task.title,
-              )
-            : ref.read(taskNotifierProvider.notifier).updateIsCompleted(index);
-      },
+      onTap: () => isEditing
+          ? showEditTaskDialog(
+              context,
+              AddEditMode.edit,
+              index: index,
+              title: task.title,
+            )
+          : ref.read(taskNotifierProvider.notifier).updateIsCompleted(index),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
         decoration: const BoxDecoration(
@@ -38,9 +36,8 @@ class TodoListItem extends ConsumerWidget {
           trailing: isEditing
               ? IconButton(
                   icon: const Icon(Icons.close, color: Colors.red),
-                  onPressed: () {
-                    ref.read(taskNotifierProvider.notifier).removeTask(index);
-                  },
+                  onPressed: () =>
+                      ref.read(taskNotifierProvider.notifier).removeTask(index),
                 )
               : task.isCompleted
                   ? Icon(Icons.check, color: Theme.of(context).primaryColor)

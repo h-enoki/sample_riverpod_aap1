@@ -38,9 +38,15 @@ class EditTaskDialog extends ConsumerWidget {
     if (addEditMode == AddEditMode.edit) {
       textEditingController.text = title!;
     }
-
     return AlertDialog(
-      title: Text(addEditMode.toString()),
+      title: (() {
+        switch (addEditMode) {
+          case AddEditMode.add:
+            return const Text("タスクを追加");
+          case AddEditMode.edit:
+            return const Text("タスクを編集");
+        }
+      })(),
       content: TextField(
         keyboardType: TextInputType.text,
         controller: textEditingController,
