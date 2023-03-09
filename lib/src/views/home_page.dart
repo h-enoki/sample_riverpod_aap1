@@ -35,11 +35,9 @@ class TaskNotifier extends StateNotifier<List<Task>> {
   }
 
   void updateIsCompleted(int index) {
-    state = [
-      ...state.sublist(0, index),
-      Task(state[index].title, !state[index].isCompleted),
-      ...state.sublist(index + 1),
-    ];
+    final List<Task> newState = [...state];
+    newState[index] = Task(newState[index].title, !newState[index].isCompleted);
+    state = newState;
   }
 }
 
