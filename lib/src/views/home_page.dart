@@ -8,21 +8,20 @@ final isEditingProvider = StateProvider<bool>((ref) {
 
 final taskNotifierProvider =
     StateNotifierProvider<TaskNotifier, List<Task>>((ref) {
-  return TaskNotifier();
+  return TaskNotifier(
+    [
+      Task("task1", false),
+      Task("task2", false),
+      Task("task3", false),
+      Task("task4", false),
+      Task("task5", true),
+      Task("task6", true),
+    ],
+  );
 });
 
 class TaskNotifier extends StateNotifier<List<Task>> {
-  TaskNotifier()
-      : super(
-          [
-            Task("task1", false),
-            Task("task2", false),
-            Task("task3", false),
-            Task("task4", false),
-            Task("task5", true),
-            Task("task6", true),
-          ],
-        );
+  TaskNotifier(List<Task> state) : super(state);
 
   void addTask(Task task) {
     debugPrint("addTask");
@@ -35,19 +34,19 @@ class TaskNotifier extends StateNotifier<List<Task>> {
   }
 
   void updateIsCompleted(int index) {
-    final List<Task> newState = [...state];
-    newState[index] = Task(newState[index].title, !newState[index].isCompleted);
-    state = newState;
+    state = [
+      ...state.sublist(0, index),
+      Task(state[index].title, !state[index].isCompleted),
+      ...state.sublist(index + 1),
+    ];
   }
 
   void toggleTask(int oldIndex, int newIndex) {
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
-    final List<Task> newState = [...state];
-    final item = newState.removeAt(oldIndex);
-    newState.insert(newIndex, item);
-    state = newState;
+    final item = state.removeAt(oldIndex);
+    state.insert(newIndex, item);
   }
 }
 
