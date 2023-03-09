@@ -113,6 +113,7 @@ Future<String?> showEditTaskDialog(
 }) async {
   return await showDialog<String>(
     context: context,
+    barrierDismissible: false,
     builder: (_) {
       switch (addEditMode) {
         case AddEditMode.add:
