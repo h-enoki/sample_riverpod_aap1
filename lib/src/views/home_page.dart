@@ -39,6 +39,16 @@ class TaskNotifier extends StateNotifier<List<Task>> {
     newState[index] = Task(newState[index].title, !newState[index].isCompleted);
     state = newState;
   }
+
+  void toggleTask(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    final List<Task> newState = [...state];
+    final item = newState.removeAt(oldIndex);
+    newState.insert(newIndex, item);
+    state = newState;
+  }
 }
 
 class MyHomePage extends ConsumerWidget {
@@ -46,9 +56,7 @@ class MyHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isEditingStateController = ref.read(isEditingProvider.notifier);
     final isEditing = ref.watch(isEditingProvider);
-
     final task = ref.watch(taskNotifierProvider);
 
     return Scaffold(
@@ -58,7 +66,7 @@ class MyHomePage extends ConsumerWidget {
           IconButton(
             icon: Icon(isEditing ? Icons.check : Icons.create_rounded),
             onPressed: () => {
-              isEditingStateController.state = !isEditing,
+              ref.read(isEditingProvider.notifier).state = !isEditing,
             },
           ),
         ],
@@ -68,9 +76,9 @@ class MyHomePage extends ConsumerWidget {
         header: isEditing ? const AddTaskListTile() : null,
         footer: isEditing ? const AddTaskListTile() : null,
         itemBuilder: (context, index) {
+          // DismissibleWidgetのdirectionでスワイプを禁止
           return Dismissible(
             key: Key(index.toString()),
-            // スワイプ禁止
             direction: DismissDirection.none,
             child: TodoListItem(
               index: index,
@@ -80,14 +88,9 @@ class MyHomePage extends ConsumerWidget {
         },
         // ドラッグ&ドロップ時のメソッド
         onReorder: (oldIndex, newIndex) {
-          debugPrint("onReorder");
-          // setState(() {
-          //   if (newIndex > oldIndex) {
-          //     newIndex -= 1;
-          //   }
-          //   final item = _items.removeAt(oldIndex);
-          //   _items.insert(newIndex, item);
-          // });
+          ref
+              .read(taskNotifierProvider.notifier)
+              .toggleTask(oldIndex, newIndex);
         },
       ),
     );
@@ -106,11 +109,9 @@ class TodoListItem extends ConsumerWidget {
     return InkWell(
       onTap: () {
         debugPrint("onTap：$index");
-        // ref.read(taskNotifierProvider.notifier).updateTask(
-        //       index,
-        //       Task("task10", true),
-        //     );
-        ref.read(taskNotifierProvider.notifier).updateIsCompleted(index);
+        isEditing
+            ? debugPrint("編集")
+            : ref.read(taskNotifierProvider.notifier).updateIsCompleted(index);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
