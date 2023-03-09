@@ -10,22 +10,25 @@ enum AddEditMode {
   edit,
 }
 
-class AddTaskDialog extends ConsumerWidget {
-  const AddTaskDialog({
+class EditTaskDialog extends ConsumerWidget {
+  const EditTaskDialog({
     super.key,
     required this.addEditMode,
+    this.index,
     this.title,
   });
 
   final AddEditMode addEditMode;
+  final int? index;
   final String? title;
 
-  factory AddTaskDialog.addTask() {
-    return const AddTaskDialog(addEditMode: AddEditMode.add);
+  factory EditTaskDialog.addTask() {
+    return const EditTaskDialog(addEditMode: AddEditMode.add);
   }
 
-  factory AddTaskDialog.editTask(String title) {
-    return AddTaskDialog(addEditMode: AddEditMode.edit, title: title);
+  factory EditTaskDialog.editTask(int index, String title) {
+    return EditTaskDialog(
+        addEditMode: AddEditMode.edit, index: index, title: title);
   }
 
   @override
@@ -56,9 +59,18 @@ class AddTaskDialog extends ConsumerWidget {
           child: const Text("OK"),
           onPressed: () {
             String textValue = textEditingController.text;
-            ref
-                .read(taskNotifierProvider.notifier)
-                .addTask(Task(textValue, false));
+            switch (addEditMode) {
+              case AddEditMode.add:
+                ref
+                    .read(taskNotifierProvider.notifier)
+                    .addTask(Task(textValue, false));
+                break;
+              case AddEditMode.edit:
+                ref
+                    .read(taskNotifierProvider.notifier)
+                    .updateTask(index!, textValue);
+                break;
+            }
             Navigator.pop(context, "OK");
           },
         ),

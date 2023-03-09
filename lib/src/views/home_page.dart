@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sample_riverpod_aap1/src/components/add_task_dialog.dart';
+import 'package:sample_riverpod_aap1/src/components/edit_task_dialog.dart';
 import 'package:sample_riverpod_aap1/src/models/task.dart';
 
 final isEditingProvider = StateProvider<bool>((ref) {
@@ -25,12 +25,18 @@ class TaskNotifier extends StateNotifier<List<Task>> {
   TaskNotifier(List<Task> state) : super(state);
 
   void addTask(Task task) {
-    debugPrint("addTask");
     state = [...state, task];
   }
 
+  void updateTask(int index, String title) {
+    state = [
+      ...state.sublist(0, index),
+      Task(title, state[index].isCompleted),
+      ...state.sublist(index + 1),
+    ];
+  }
+
   void removeTask(int index) {
-    debugPrint("removeTask");
     state = List.from(state)..removeAt(index);
   }
 
@@ -108,9 +114,13 @@ class TodoListItem extends ConsumerWidget {
     final isEditing = ref.watch(isEditingProvider);
     return InkWell(
       onTap: () {
-        debugPrint("onTap：$index");
         isEditing
-            ? showAddTaskDialog(context, AddEditMode.edit, title: task.title)
+            ? showEditTaskDialog(
+                context,
+                AddEditMode.edit,
+                index: index,
+                title: task.title,
+              )
             : ref.read(taskNotifierProvider.notifier).updateIsCompleted(index);
       },
       child: Container(
@@ -147,12 +157,8 @@ class AddTaskListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        showAddTaskDialog(context, AddEditMode.add);
+        showEditTaskDialog(context, AddEditMode.add);
       },
-      // onTap: () {
-      //   // ref.read(taskNotifierProvider.notifier).addTask(Task("task6", false));
-      //
-      // },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
         decoration: const BoxDecoration(
@@ -169,16 +175,20 @@ class AddTaskListTile extends ConsumerWidget {
   }
 }
 
-Future<String?> showAddTaskDialog(BuildContext context, AddEditMode addEditMode,
-    {String? title}) async {
+Future<String?> showEditTaskDialog(
+  BuildContext context,
+  AddEditMode addEditMode, {
+  int? index,
+  String? title,
+}) async {
   return await showDialog<String>(
     context: context,
     builder: (_) {
       switch (addEditMode) {
         case AddEditMode.add:
-          return AddTaskDialog.addTask();
+          return EditTaskDialog.addTask();
         case AddEditMode.edit:
-          return AddTaskDialog.editTask(title!);
+          return EditTaskDialog.editTask(index!, title!);
       }
     },
   );
