@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sample_riverpod_aap1/src/components/add_task_dialog.dart';
 import 'package:sample_riverpod_aap1/src/models/task.dart';
 
 final isEditingProvider = StateProvider<bool>((ref) {
@@ -41,7 +42,7 @@ class TaskNotifier extends StateNotifier<List<Task>> {
     ];
   }
 
-  void toggleTask(int oldIndex, int newIndex) {
+  void reorderTask(int oldIndex, int newIndex) {
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
@@ -89,7 +90,7 @@ class MyHomePage extends ConsumerWidget {
         onReorder: (oldIndex, newIndex) {
           ref
               .read(taskNotifierProvider.notifier)
-              .toggleTask(oldIndex, newIndex);
+              .reorderTask(oldIndex, newIndex);
         },
       ),
     );
@@ -109,7 +110,7 @@ class TodoListItem extends ConsumerWidget {
       onTap: () {
         debugPrint("onTap：$index");
         isEditing
-            ? debugPrint("編集")
+            ? showAddTaskDialog(context, AddEditMode.edit, title: task.title)
             : ref.read(taskNotifierProvider.notifier).updateIsCompleted(index);
       },
       child: Container(
@@ -146,8 +147,12 @@ class AddTaskListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        ref.read(taskNotifierProvider.notifier).addTask(Task("task6", false));
+        showAddTaskDialog(context, AddEditMode.add);
       },
+      // onTap: () {
+      //   // ref.read(taskNotifierProvider.notifier).addTask(Task("task6", false));
+      //
+      // },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
         decoration: const BoxDecoration(
@@ -162,4 +167,19 @@ class AddTaskListTile extends ConsumerWidget {
       ),
     );
   }
+}
+
+Future<String?> showAddTaskDialog(BuildContext context, AddEditMode addEditMode,
+    {String? title}) async {
+  return await showDialog<String>(
+    context: context,
+    builder: (_) {
+      switch (addEditMode) {
+        case AddEditMode.add:
+          return AddTaskDialog.addTask();
+        case AddEditMode.edit:
+          return AddTaskDialog.editTask(title!);
+      }
+    },
+  );
 }
