@@ -38,49 +38,52 @@ class EditTaskDialog extends ConsumerWidget {
     if (addEditMode == AddEditMode.edit) {
       textEditingController.text = title!;
     }
-    return AlertDialog(
-      title: (() {
-        switch (addEditMode) {
-          case AddEditMode.add:
-            return const Text("タスクを追加");
-          case AddEditMode.edit:
-            return const Text("タスクを編集");
-        }
-      })(),
-      content: TextField(
-        keyboardType: TextInputType.text,
-        controller: textEditingController,
-        decoration: const InputDecoration(hintText: "タスクを入力"),
-        enabled: true,
-        maxLength: 20,
-        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: AlertDialog(
+        title: (() {
+          switch (addEditMode) {
+            case AddEditMode.add:
+              return const Text("タスクを追加");
+            case AddEditMode.edit:
+              return const Text("タスクを編集");
+          }
+        })(),
+        content: TextField(
+          keyboardType: TextInputType.text,
+          controller: textEditingController,
+          decoration: const InputDecoration(hintText: "タスクを入力"),
+          enabled: true,
+          maxLength: 20,
+          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+        ),
+        actions: <Widget>[
+          // ボタン領域
+          TextButton(
+            child: const Text("キャンセル"),
+            onPressed: () => Navigator.pop(context, "キャンセル"),
+          ),
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              String textValue = textEditingController.text;
+              switch (addEditMode) {
+                case AddEditMode.add:
+                  ref
+                      .read(taskNotifierProvider.notifier)
+                      .addTask(Task(textValue, false));
+                  break;
+                case AddEditMode.edit:
+                  ref
+                      .read(taskNotifierProvider.notifier)
+                      .updateTask(index!, textValue);
+                  break;
+              }
+              Navigator.pop(context, "OK");
+            },
+          ),
+        ],
       ),
-      actions: <Widget>[
-        // ボタン領域
-        TextButton(
-          child: const Text("キャンセル"),
-          onPressed: () => Navigator.pop(context, "キャンセル"),
-        ),
-        TextButton(
-          child: const Text("OK"),
-          onPressed: () {
-            String textValue = textEditingController.text;
-            switch (addEditMode) {
-              case AddEditMode.add:
-                ref
-                    .read(taskNotifierProvider.notifier)
-                    .addTask(Task(textValue, false));
-                break;
-              case AddEditMode.edit:
-                ref
-                    .read(taskNotifierProvider.notifier)
-                    .updateTask(index!, textValue);
-                break;
-            }
-            Navigator.pop(context, "OK");
-          },
-        ),
-      ],
     );
   }
 }
