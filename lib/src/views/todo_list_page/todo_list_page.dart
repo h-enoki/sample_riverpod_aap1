@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_riverpod_aap1/src/components/edit_task_dialog.dart';
 import 'package:sample_riverpod_aap1/src/models/task.dart';
+import 'package:sample_riverpod_aap1/src/views/todo_list_page/parts/todo_list_item.dart';
+
+import 'parts/add_task_list_tile.dart';
 
 final isEditingProvider = StateProvider<bool>((ref) {
   return false;
@@ -57,8 +60,8 @@ class TaskNotifier extends StateNotifier<List<Task>> {
   }
 }
 
-class MyHomePage extends ConsumerWidget {
-  const MyHomePage({super.key});
+class ToDoListPage extends ConsumerWidget {
+  const ToDoListPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -98,78 +101,6 @@ class MyHomePage extends ConsumerWidget {
               .read(taskNotifierProvider.notifier)
               .reorderTask(oldIndex, newIndex);
         },
-      ),
-    );
-  }
-}
-
-class TodoListItem extends ConsumerWidget {
-  const TodoListItem({super.key, required this.index, required this.task});
-
-  final int index;
-  final Task task;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isEditing = ref.watch(isEditingProvider);
-    return InkWell(
-      onTap: () {
-        isEditing
-            ? showEditTaskDialog(
-                context,
-                AddEditMode.edit,
-                index: index,
-                title: task.title,
-              )
-            : ref.read(taskNotifierProvider.notifier).updateIsCompleted(index);
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.grey,
-            ),
-          ),
-        ),
-        child: ListTile(
-          title: Text(task.title),
-          trailing: isEditing
-              ? IconButton(
-                  icon: const Icon(Icons.close, color: Colors.red),
-                  onPressed: () {
-                    ref.read(taskNotifierProvider.notifier).removeTask(index);
-                  },
-                )
-              : task.isCompleted
-                  ? Icon(Icons.check, color: Theme.of(context).primaryColor)
-                  : null,
-        ),
-      ),
-    );
-  }
-}
-
-class AddTaskListTile extends ConsumerWidget {
-  const AddTaskListTile({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: () {
-        showEditTaskDialog(context, AddEditMode.add);
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Colors.grey),
-          ),
-        ),
-        child: const ListTile(
-          title: Text("タスクを追加"),
-          leading: Icon(Icons.add),
-        ),
       ),
     );
   }

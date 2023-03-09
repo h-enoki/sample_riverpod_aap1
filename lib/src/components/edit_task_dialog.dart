@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_riverpod_aap1/src/models/task.dart';
 
-import 'package:sample_riverpod_aap1/src/views/home_page.dart';
+import 'package:sample_riverpod_aap1/src/views/todo_list_page/todo_list_page.dart';
 
 enum AddEditMode {
   add,
