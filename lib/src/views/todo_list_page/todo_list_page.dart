@@ -92,14 +92,10 @@ class ToDoListPage extends ConsumerWidget {
             ? const AddTaskListTile(addEditMode: AddEditMode.add)
             : null,
         itemBuilder: (context, index) {
-          // DismissibleWidgetのdirectionでスワイプを禁止
-          return Dismissible(
+          return TodoListItem(
             key: Key(index.toString()),
-            direction: DismissDirection.none,
-            child: TodoListItem(
-              index: index,
-              task: task[index],
-            ),
+            index: index,
+            task: task[index],
           );
         },
         // ドラッグ&ドロップ時のメソッド
