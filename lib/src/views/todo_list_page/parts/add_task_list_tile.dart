@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sample_riverpod_aap1/src/components/edit_task_dialog.dart';
-import 'package:sample_riverpod_aap1/src/views/todo_list_page/todo_list_page.dart';
+import 'package:sample_riverpod_aap1/src/utils/showDialog.dart';
 
 class AddTaskListTile extends ConsumerWidget {
   const AddTaskListTile({super.key, required this.addEditMode});

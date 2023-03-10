@@ -109,37 +109,3 @@ class ToDoListPage extends ConsumerWidget {
     );
   }
 }
-
-Future<String?> showAddTaskDialog(BuildContext context) async {
-  return await showDialog<String>(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) {
-      return EditTaskDialog.addTask();
-    },
-  );
-}
-
-Future<String?> showAddFirstTaskDialog(BuildContext context) async {
-  return await showDialog<String>(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) {
-      return EditTaskDialog.addFirstTask();
-    },
-  );
-}
-
-Future<String?> showEditTaskDialog(
-  BuildContext context,
-  int index,
-  String title,
-) async {
-  return await showDialog<String>(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) {
-      return EditTaskDialog.editTask(index, title);
-    },
-  );
-}
