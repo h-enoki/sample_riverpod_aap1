@@ -38,7 +38,7 @@ class TaskNotifier extends StateNotifier<List<Task>> {
   void updateTask(int index, String title) {
     state = [
       ...state.sublist(0, index),
-      Task(title, state[index].isCompleted),
+      state[index].copyWith(title: title),
       ...state.sublist(index + 1),
     ];
   }
@@ -50,7 +50,7 @@ class TaskNotifier extends StateNotifier<List<Task>> {
   void updateIsCompleted(int index) {
     state = [
       ...state.sublist(0, index),
-      Task(state[index].title, !state[index].isCompleted),
+      state[index].copyWith(isCompleted: !state[index].isCompleted),
       ...state.sublist(index + 1),
     ];
   }
