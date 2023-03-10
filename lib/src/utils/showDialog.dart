@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../components/edit_task_dialog.dart';
+import 'package:sample_riverpod_aap1/src/components/edit_task_dialog.dart';
 
 Future<String?> showAddTaskDialog(BuildContext context) async {
   return await showDialog<String>(
