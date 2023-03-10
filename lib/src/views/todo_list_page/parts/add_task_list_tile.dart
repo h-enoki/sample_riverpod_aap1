@@ -11,7 +11,20 @@ class AddTaskListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-      onTap: () => showEditTaskDialog(context, addEditMode),
+      onTap: () {
+        switch (addEditMode) {
+          case AddEditMode.add:
+            showAddTaskDialog(context);
+            break;
+          case AddEditMode.addFirst:
+            showAddFirstTaskDialog(context);
+            break;
+          case AddEditMode.edit:
+            break;
+          default:
+            throw Exception('Invalid addEditMode: $addEditMode');
+        }
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
         decoration: const BoxDecoration(

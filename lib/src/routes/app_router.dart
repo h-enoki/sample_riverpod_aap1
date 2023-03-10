@@ -10,7 +10,7 @@ class AppRouter {
         return _buildRoute(const ToDoListPage());
 
       default:
-        return null;
+        throw Exception('Unknown route: ${settings.name}');
     }
   }
 

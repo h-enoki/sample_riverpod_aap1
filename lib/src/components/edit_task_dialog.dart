@@ -61,6 +61,8 @@ class EditTaskDialog extends ConsumerWidget {
               return const Text("タスクを追加");
             case AddEditMode.edit:
               return const Text("タスクを編集");
+            default:
+              throw Exception('Invalid addEditMode: $addEditMode');
           }
         })(),
         content: TextField(
@@ -97,6 +99,8 @@ class EditTaskDialog extends ConsumerWidget {
                       .read(taskNotifierProvider.notifier)
                       .updateTask(index!, textValue);
                   break;
+                default:
+                  throw Exception('Invalid addEditMode: $addEditMode');
               }
               Navigator.pop(context, "OK");
             },
