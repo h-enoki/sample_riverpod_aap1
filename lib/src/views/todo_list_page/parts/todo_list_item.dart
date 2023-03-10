@@ -16,8 +16,8 @@ class TodoListItem extends ConsumerWidget {
       onTap: () => isEditing
           ? showEditTaskDialog(
               context,
-              index: index,
-              title: task.title,
+              index,
+              task.title,
             )
           : ref.read(taskNotifierProvider.notifier).updateIsCompleted(index),
       child: Container(
