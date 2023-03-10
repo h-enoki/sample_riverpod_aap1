@@ -1,9 +1,19 @@
 class Task {
-  Task(
+  const Task(
     this.title,
     this.isCompleted,
   );
 
-  String title;
-  bool isCompleted;
+  final String title;
+  final bool isCompleted;
+
+  Task copyWith({
+    String? title,
+    bool? isCompleted,
+  }) {
+    return Task(
+      title ?? this.title,
+      isCompleted ?? this.isCompleted,
+    );
+  }
 }

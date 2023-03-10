@@ -14,12 +14,12 @@ final taskNotifierProvider =
     StateNotifierProvider<TaskNotifier, List<Task>>((ref) {
   return TaskNotifier(
     [
-      Task("task1", false),
-      Task("task2", false),
-      Task("task3", false),
-      Task("task4", false),
-      Task("task5", true),
-      Task("task6", true),
+      const Task("task1", false),
+      const Task("task2", false),
+      const Task("task3", false),
+      const Task("task4", false),
+      const Task("task5", true),
+      const Task("task6", true),
     ],
   );
 });
