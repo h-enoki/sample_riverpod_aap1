@@ -12,7 +12,7 @@ enum AddEditMode {
 }
 
 class EditTaskDialog extends ConsumerWidget {
-  const EditTaskDialog({
+  EditTaskDialog({
     super.key,
     required this.addEditMode,
     this.index,
@@ -24,11 +24,11 @@ class EditTaskDialog extends ConsumerWidget {
   final String? title;
 
   factory EditTaskDialog.addTask() {
-    return const EditTaskDialog(addEditMode: AddEditMode.add);
+    return EditTaskDialog(addEditMode: AddEditMode.add);
   }
 
   factory EditTaskDialog.addFirstTask() {
-    return const EditTaskDialog(addEditMode: AddEditMode.addFirst);
+    return EditTaskDialog(addEditMode: AddEditMode.addFirst);
   }
 
   factory EditTaskDialog.editTask(int index, String title) {
@@ -36,10 +36,11 @@ class EditTaskDialog extends ConsumerWidget {
         addEditMode: AddEditMode.edit, index: index, title: title);
   }
 
+  // TextFieldのコントローラー
+  final TextEditingController textEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TextFieldのコントローラー
-    final TextEditingController textEditingController = TextEditingController();
     if (addEditMode == AddEditMode.edit) {
       textEditingController.text = title!;
     }
