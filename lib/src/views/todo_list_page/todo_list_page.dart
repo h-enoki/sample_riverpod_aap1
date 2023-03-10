@@ -31,6 +31,10 @@ class TaskNotifier extends StateNotifier<List<Task>> {
     state = [...state, task];
   }
 
+  void addFirstTask(Task task) {
+    state = [task, ...state];
+  }
+
   void updateTask(int index, String title) {
     state = [
       ...state.sublist(0, index),
@@ -81,8 +85,12 @@ class ToDoListPage extends ConsumerWidget {
       ),
       body: ReorderableListView.builder(
         itemCount: task.length,
-        header: isEditing ? const AddTaskListTile() : null,
-        footer: isEditing ? const AddTaskListTile() : null,
+        header: isEditing
+            ? const AddTaskListTile(addEditMode: AddEditMode.addFirst)
+            : null,
+        footer: isEditing
+            ? const AddTaskListTile(addEditMode: AddEditMode.add)
+            : null,
         itemBuilder: (context, index) {
           // DismissibleWidgetのdirectionでスワイプを禁止
           return Dismissible(
@@ -118,6 +126,8 @@ Future<String?> showEditTaskDialog(
       switch (addEditMode) {
         case AddEditMode.add:
           return EditTaskDialog.addTask();
+        case AddEditMode.addFirst:
+          return EditTaskDialog.addFirstTask();
         case AddEditMode.edit:
           return EditTaskDialog.editTask(index!, title!);
       }

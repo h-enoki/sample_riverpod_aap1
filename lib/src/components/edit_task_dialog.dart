@@ -7,6 +7,7 @@ import 'package:sample_riverpod_aap1/src/views/todo_list_page/todo_list_page.dar
 
 enum AddEditMode {
   add,
+  addFirst,
   edit,
 }
 
@@ -24,6 +25,10 @@ class EditTaskDialog extends ConsumerWidget {
 
   factory EditTaskDialog.addTask() {
     return const EditTaskDialog(addEditMode: AddEditMode.add);
+  }
+
+  factory EditTaskDialog.addFirstTask() {
+    return const EditTaskDialog(addEditMode: AddEditMode.addFirst);
   }
 
   factory EditTaskDialog.editTask(int index, String title) {
@@ -44,6 +49,8 @@ class EditTaskDialog extends ConsumerWidget {
         title: (() {
           switch (addEditMode) {
             case AddEditMode.add:
+              return const Text("タスクを追加");
+            case AddEditMode.addFirst:
               return const Text("タスクを追加");
             case AddEditMode.edit:
               return const Text("タスクを編集");
@@ -72,6 +79,11 @@ class EditTaskDialog extends ConsumerWidget {
                   ref
                       .read(taskNotifierProvider.notifier)
                       .addTask(Task(textValue, false));
+                  break;
+                case AddEditMode.addFirst:
+                  ref
+                      .read(taskNotifierProvider.notifier)
+                      .addFirstTask(Task(textValue, false));
                   break;
                 case AddEditMode.edit:
                   ref

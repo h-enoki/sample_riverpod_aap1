@@ -4,12 +4,14 @@ import 'package:sample_riverpod_aap1/src/components/edit_task_dialog.dart';
 import 'package:sample_riverpod_aap1/src/views/todo_list_page/todo_list_page.dart';
 
 class AddTaskListTile extends ConsumerWidget {
-  const AddTaskListTile({super.key});
+  const AddTaskListTile({super.key, required this.addEditMode});
+
+  final AddEditMode addEditMode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-      onTap: () => showEditTaskDialog(context, AddEditMode.add),
+      onTap: () => showEditTaskDialog(context, addEditMode),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
         decoration: const BoxDecoration(
