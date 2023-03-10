@@ -12,38 +12,44 @@ enum AddEditMode {
 }
 
 class EditTaskDialog extends ConsumerWidget {
-  EditTaskDialog({
+  const EditTaskDialog({
     super.key,
     required this.addEditMode,
     this.index,
     this.title,
+    required this.textEditingController,
   });
 
   final AddEditMode addEditMode;
   final int? index;
   final String? title;
+  final TextEditingController textEditingController;
 
   factory EditTaskDialog.addTask() {
-    return EditTaskDialog(addEditMode: AddEditMode.add);
+    return EditTaskDialog(
+      addEditMode: AddEditMode.add,
+      textEditingController: TextEditingController(),
+    );
   }
 
   factory EditTaskDialog.addFirstTask() {
-    return EditTaskDialog(addEditMode: AddEditMode.addFirst);
+    return EditTaskDialog(
+      addEditMode: AddEditMode.addFirst,
+      textEditingController: TextEditingController(),
+    );
   }
 
   factory EditTaskDialog.editTask(int index, String title) {
     return EditTaskDialog(
-        addEditMode: AddEditMode.edit, index: index, title: title);
+      addEditMode: AddEditMode.edit,
+      index: index,
+      title: title,
+      textEditingController: TextEditingController(text: title),
+    );
   }
-
-  // TextFieldのコントローラー
-  final TextEditingController textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (addEditMode == AddEditMode.edit) {
-      textEditingController.text = title!;
-    }
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: AlertDialog(
