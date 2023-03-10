@@ -131,15 +131,15 @@ Future<String?> showAddFirstTaskDialog(BuildContext context) async {
 }
 
 Future<String?> showEditTaskDialog(
-  BuildContext context, {
-  int? index,
-  String? title,
-}) async {
+  BuildContext context,
+  int index,
+  String title,
+) async {
   return await showDialog<String>(
     context: context,
     barrierDismissible: false,
     builder: (_) {
-      return EditTaskDialog.editTask(index!, title!);
+      return EditTaskDialog.editTask(index, title);
     },
   );
 }
