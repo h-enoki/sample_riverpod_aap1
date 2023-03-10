@@ -59,8 +59,9 @@ class TaskNotifier extends StateNotifier<List<Task>> {
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
-    final item = state.removeAt(oldIndex);
-    state.insert(newIndex, item);
+    final newState = List<Task>.from(state);
+    newState.insert(newIndex, newState.removeAt(oldIndex));
+    state = newState;
   }
 }
 
